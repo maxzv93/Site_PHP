@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Устройство{% endblock %}
+
+{% block body %}
+    <div>id: {{ device.id }}</div>
+    <div>Модель: {{ device.name }}</div>
+    <div>Объем памяти: {{ device.memorySize }}</div>
+    <div>Цена: {{ device.price }}</div>
+    {% if is_granted('ROLE_ADMIN_USER') %}
+        <div>
+            <a href="{{ path('device_edit', {'device': device.id}) }}">
+                Редактировать
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}

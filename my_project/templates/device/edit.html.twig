@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% block title %}Редактирование{% endblock %}
+
+{% block body %}
+    {{ form(form) }}
+    <div class="btn btn-danger" onclick="deleteDevice();">Удалить</div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        function deleteDevice() {
+            $.post("{{ path("delete_device", {'device':device.id}) }}", {}, function (data) {
+                if(data.status === "success"){
+                    alert("Успешное удаление");
+                }
+                else{
+                    alert("Что-то пошло не так");
+                }
+            });
+        }
+    </script>
+{% endblock %}

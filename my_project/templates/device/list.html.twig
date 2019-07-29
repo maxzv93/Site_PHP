@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Список устройств{% endblock %}
+
+{% block modals %}
+    {#модальное окно#}
+    <div id="modalBackground" onclick="hideModal()"></div>
+        <template id="deviceModalTemplate">
+            <div class="modal-wrapper">
+                <div class="my-modal">
+                    <div class="modal-title">
+                        {name}
+                    </div>
+                    <div class="modal-content">
+                        {content}
+                    </div>
+                    <div class="modal-actions">
+                        {buttons}
+                    </div>
+                </div>
+            </div>
+        </template>
+{% endblock %}
+
+
+
+{% block body %}
+    <div class="row">
+        {% for device in devices %}
+            <div class="col-sm-6">
+                <div class="card">
+{#                    <img src="..." class="card-img-top" alt="...">#}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ device.name }}</h5>
+                        <p class="card-text">{{ device.price }}</p>
+{#                        {{ path('device_page', {'device':device.id}) }}#}
+                        <a  href="#" onclick="showDevice({{ device.id }})" class="card-link"> Посмотреть полностью товар </a>
+                        <div  onclick="addToFavourite({{ device.id }})" class="btn btn-primary"> Добавить в избранное </div>
+                    </div>
+                </div>
+            </div>
+
+
+            {#        <div>#}
+            {#            <a href="{{ path('device_page', {'device':device.id}) }}"> {{ device.name }}</a>#}
+            {#        </div>#}
+        {% endfor %}
+    </div>
+{% endblock %}
