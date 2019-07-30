@@ -5,7 +5,7 @@
 {% block body %}
     <div class="messages"></div>
     <input type="text" id="userMessage">
-    <button onclick="sendMessage()"></button>
+    <div class="btn btn-primary" onclick="sendMessage()">Отправить</div>
 {% endblock %}
 
 
@@ -29,9 +29,29 @@
                     lastMessageId = messages[messages.length - 1]["id"];
                 }
                 loadMessages();
-
                 }
             );
+        }
+        
+        function sendMessage()
+        {
+            let message = $("#userMessage").val();
+            if(message.length < 10){
+                alert("Минимальная длина сообщения - 10 символов");
+                return;
+            }
+
+            $.post("{{ path("send_message") }}",{
+                message: message,
+                destination: 1 //изменить
+            }, function (responce) {
+                if (responce.status === "success"){
+                    $(".messages").html($(".messages").html() + "<hr>" + message);
+                    $("#userMessage").val("");
+                }else{
+                    alert("Чтото пошло не так!");
+                }
+            });
         }
     </script>
 {% endblock %}

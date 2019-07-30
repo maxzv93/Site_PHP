@@ -42,11 +42,11 @@ class ChatController extends AbstractController
         $lastMessageId = $request->get("lastMessageId");
         $requestCount = 0;
         while($requestCount < 25){
-            $messages = $repository->
-            findLastMessages($lastMessageId, $this->getUser());//, $this->getUser()
+            $messages = $repository->findLastMessages($lastMessageId, $this->getUser());//, $this->getUser()
             if(count($messages) > 0){
                 return $this->json(["status" => "success", "messages" => $messages]);
             }
+            //dd($requestCount);
             $requestCount++;
             sleep(1);
         }
@@ -54,7 +54,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @Route("/support/get_messages_with_user/{user}.json", requirements={"user"="\d+"}, name="get_messages_with_user")
+     * @Route("/support/get_messages_with_user/{user}", requirements={"user"="\d+"}, name="get_messages_with_user")
      * @param ShopUser $user
      * @param Request $request
      * @param ChatMessageRepository $repository
@@ -69,6 +69,7 @@ class ChatController extends AbstractController
             if(count($messages) > 0){
                 return $this->json(["status" => "success", "messages" => $messages]);
             }
+            //dd($requestCount);
             $requestCount++;
             sleep(1);
         }
@@ -84,9 +85,6 @@ class ChatController extends AbstractController
         $users = $repository->findAll();
         return $this->render('chat/users.html.twig',[
             "users" => $users,
-
-
-
             "currentUserId" => $this->getUser()->getId()
         ]);
 
@@ -101,7 +99,36 @@ class ChatController extends AbstractController
         return $this->render('chat/chatWithUser.html.twig',[
             'destination' => $user
         ]);
+
     }
+
+    /**
+     * @Route("/support/send_message", name="send_message")
+     * @param Request $request
+     * @param ShopUserRepository $repository
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
+    public function sendMessage(Request $request, ShopUserRepository $repository){
+        $author = $this->getUser();
+        $destination = $repository->find($request->request->get("destination"));
+        $message = $request->request->get("message");
+        $time = new \DateTime();
+        $manager = $this->getDoctrine()->getManager();
+
+        $newMessage = new ChatMessage();
+        $newMessage->setMessage($message);
+        $newMessage->setAuthor($author);
+        $newMessage->setDestination($destination);
+
+        $newMessage->setCreatedAt($time);
+
+        $manager->persist($newMessage);
+        $manager->flush();
+
+        return $this->json(["status" => "success"]);
+    }
+
 }
 
 

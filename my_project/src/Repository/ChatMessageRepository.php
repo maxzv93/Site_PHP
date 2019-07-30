@@ -49,30 +49,55 @@ class ChatMessageRepository extends ServiceEntityRepository
     }
     */
 
-    public function findLastMessages($lastMessageId, ShopUser $user){
+    public function findLastMessages($lastMessageId, ShopUser $user)
+    {
 
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.id > :lastMessageId')
-            ->andWhere('c.destination = :user')
-            ->setParameter('lastMessageId', $lastMessageId)
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult()
-            ;
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            "SELECT c FROM App\Entity\ChatMessage c
+                WHERE (c.author = :user or c.destination = :user)
+                and c.id > :lastMessageId ORDER BY c.created_at");
+
+        return $query->execute([
+            "lastMessageId" => $lastMessageId,
+            "user" => $user
+        ]);
+
     }
-    public function findLastMessagesWithUser($lastMessageId, ShopUser $user, ShopUser $currentUser){
 
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.id > :lastMessageId')
-            ->andWhere('c.destination = :currentUser')
-            ->andWhere('c.author = :user')
-            ->setParameter('lastMessageId', $lastMessageId)
-            ->setParameter('user', $user)
-            ->setParameter('currentUser', $currentUser)
-            ->getQuery()
-            ->getResult()
-            ;
+    public function findLastMessagesWithUser($lastMessageId, ShopUser $user, ShopUser $currentUser)
+    {
+        $entityManager = $this->getEntityManager();
+        dd($lastMessageId);
+
+        $query = $entityManager->createQuery(
+            "SELECT c FROM App\Entity\ChatMessage c
+                WHERE (c.author = :user and c.destination = :currentUser)
+                OR (c.author = :currentUser and c.destination = :user)
+                and c.id > :lastMessageId");
+
+        return $query->execute([
+            "lastMessageId" => $lastMessageId,
+            "user" => $user,
+            "currentUser" => $currentUser
+        ]);
+
     }
 
 
 }
+
+
+
+
+//        return $this->createQueryBuilder('c')
+//            ->andWhere('c.id > :lastMessageId')
+//            ->andWhere('c.destination = :currentUser')
+//            ->andWhere('c.author = :user')
+//            ->orWhere('c.destination = :user')
+//            ->andWhere('c.author = :currentUser')
+//            ->setParameter('lastMessageId', $lastMessageId)
+//            ->setParameter('user', $user)
+//            ->setParameter('currentUser', $currentUser)
+//            ->getQuery()
+//            ->getResult();
