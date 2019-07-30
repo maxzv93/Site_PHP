@@ -41,9 +41,21 @@ class ShopUser implements UserInterface
 
     private $devices;
 
+//    /**
+//     * @ORM\OneToMany(targetEntity="App\Entity\ChatMessage", mappedBy="author")
+//     */
+//    private $chatMessages;
+//
+//    /**
+//     * @ORM\OneToMany(targetEntity="App\Entity\ChatMessage", mappedBy="destination")
+//     */
+//    private $inboxMessages;
+
     public function __construct()
     {
         $this->devices = new ArrayCollection();
+//        $this->chatMessages = new ArrayCollection();
+//        $this->inboxMessages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -127,7 +139,7 @@ class ShopUser implements UserInterface
     /**
      * @return Collection|Device[]
      */
-    public function getDevices(): Collection
+    public function getDevices()//: Collection
     {
         return $this->devices;
     }
@@ -151,6 +163,68 @@ class ShopUser implements UserInterface
                 $device->setBrand(null);
             }
         }
+
+//        return $this;
+//    }
+//
+//    /**
+//     * @return Collection|ChatMessage[]
+//     */
+//    public function getChatMessages(): Collection
+//    {
+//        return $this->chatMessages;
+//    }
+//
+//    public function addChatMessage(ChatMessage $chatMessage): self
+//    {
+//        if (!$this->chatMessages->contains($chatMessage)) {
+//            $this->chatMessages[] = $chatMessage;
+//            $chatMessage->setAuthor($this);
+//        }
+//
+//        return $this;
+//    }
+//
+//    public function removeChatMessage(ChatMessage $chatMessage): self
+//    {
+//        if ($this->chatMessages->contains($chatMessage)) {
+//            $this->chatMessages->removeElement($chatMessage);
+//            // set the owning side to null (unless already changed)
+//            if ($chatMessage->getAuthor() === $this) {
+//                $chatMessage->setAuthor(null);
+//            }
+//        }
+//
+//        return $this;
+//    }
+//
+//    /**
+//     * @return Collection|ChatMessage[]
+//     */
+//    public function getInboxMessages(): Collection
+//    {
+//        return $this->inboxMessages;
+//    }
+//
+//    public function addInboxMessage(ChatMessage $inboxMessage): self
+//    {
+//        if (!$this->inboxMessages->contains($inboxMessage)) {
+//            $this->inboxMessages[] = $inboxMessage;
+//            $inboxMessage->setDestination($this);
+//        }
+//
+//        return $this;
+//    }
+//
+//    public function removeInboxMessage(ChatMessage $inboxMessage): self
+//    {
+//        if ($this->inboxMessages->contains($inboxMessage)) {
+//            $this->inboxMessages->removeElement($inboxMessage);
+//            // set the owning side to null (unless already changed)
+//            if ($inboxMessage->getDestination() === $this) {
+//                $inboxMessage->setDestination(null);
+//            }
+//        }
 
         return $this;
     }
